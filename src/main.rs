@@ -30,7 +30,9 @@ fn validate_ipv4_addr(addr: &String) -> bool{
 
 fn main(){
     let args = Command::new("OxiScanner").about("A simple port scanner written in rust").arg(arg!(-a --address <ADDRESS> "The IP address to be scanned").required(true))
-                                                           .arg(arg!(-p --ports <PORTS> "The ports to be scanned.").required(true)).get_matches();
+                                                           .arg(arg!(-p --ports <PORTS> "The ports to be scanned.").required(true))
+                                                            .arg(arg!(-t --timeout <SECONDS> "The time it takes, in seconds, for a connection attempt to timeout (DEFAULT=5)"))
+                                                            .get_matches();
     // ensure the address is valid 
     let address: &String = args.get_one::<String>("address").unwrap();
     if !validate_ipv4_addr(address){
@@ -46,8 +48,24 @@ fn main(){
                     exit(1)
                 }
     }
+    // read the user's timeout setting (if provided)
+    let timeout: u64;
+    match args.get_one::<String>("timeout"){
+        Some(tmp) => {
+            match tmp.parse::<u64>() {
+                Ok(val) => {timeout = val}
+                Err(_) => {
+                    println!("Invalid timeout.");
+                    exit(1)
+                }
+
+            }
+        }
+        None => {timeout = 5}
+        
+    }
     let scan = PortScanner::new(&address, ports);
     // begin the scan
     // TODO: Make this determine the type of scan (multithreaded, SYN, etc.) to run before running
-    scan.scan_single_threaded();
+    scan.scan_single_threaded(timeout);
 }
