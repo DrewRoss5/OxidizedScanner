@@ -1,7 +1,8 @@
 mod scanner;
-use std::{num::ParseIntError, process::exit};
+use std::{num::ParseIntError, process::exit, time::SystemTime};
 
 use clap::{arg, Command};
+use colored::Colorize;
 use scanner::PortScanner;
 
 // parses ports from a string of ports seperated by commas, returns an error if a port is invalid
@@ -67,5 +68,10 @@ fn main(){
     let scan = PortScanner::new(&address, ports);
     // begin the scan
     // TODO: Make this determine the type of scan (multithreaded, SYN, etc.) to run before running
+    println!("{}", "Starting Scan...".blue()); 
+    let sys_time = SystemTime::now();
     scan.scan_single_threaded(timeout);
+    let elapsed = sys_time.elapsed().unwrap();
+    println!("{}", "DONE".bright_blue());
+    println!("Scan Completed in: {} seconds", elapsed.as_secs_f64());
 }
