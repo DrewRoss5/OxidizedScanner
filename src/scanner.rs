@@ -2,12 +2,12 @@ use std::{io, net::{Shutdown, TcpStream}};
 use colored::*;
 
 pub struct PortScanner{
-    ports: Vec<i16>,
+    ports: Vec<u16>,
     address: String
 }
 
 impl PortScanner {
-    pub fn new(address_str: &str, port_vec: Vec<i16>) -> Self{
+    pub fn new(address_str: &str, port_vec: Vec<u16>) -> Self{
         Self { ports: port_vec, address: address_str.to_string() }
     }
 
@@ -28,7 +28,7 @@ impl PortScanner {
 }
 
 // attempts to connect to the provided address on the provided port, returns true if the port is open, otherwise, returns false
-pub fn scan_port(address: &String, port: i16) -> Result<bool, io::Error>{
+pub fn scan_port(address: &String, port: u16) -> Result<bool, io::Error>{
     match TcpStream::connect(format!("{}:{}", address, port)) {
         Ok(stream) => {
             stream.shutdown(Shutdown::Both)?;

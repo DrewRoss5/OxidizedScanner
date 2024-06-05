@@ -5,10 +5,10 @@ use clap::{arg, Command};
 use scanner::PortScanner;
 
 // parses ports from a string of ports seperated by commas, returns an error if a port is invalid
-fn parse_ports(port_str: &String) -> Result<Vec<i16>, ParseIntError>{
-    let mut ports: Vec<i16> = Vec::new();
+fn parse_ports(port_str: &String) -> Result<Vec<u16>, ParseIntError>{
+    let mut ports: Vec<u16> = Vec::new();
     for i in port_str.split(','){
-        let port: i16 = i.parse()?;
+        let port: u16 = i.parse()?;
         ports.push(port);
     }
     Ok(ports)
@@ -21,7 +21,7 @@ fn validate_ipv4_addr(addr: &String) -> bool{
         return false
     }
     for i in octets{
-        if i.parse::<i8>().is_err(){
+        if i.parse::<u8>().is_err(){
             return false
         }
     }
@@ -38,7 +38,7 @@ fn main(){
         exit(1);
     }
     // ensure all ports are valid
-    let ports: Vec<i16>;
+    let ports: Vec<u16>;
     match parse_ports(args.get_one::<String>("ports").unwrap()){
         Ok(tmp) => {ports = tmp}
         Err(_) => {
