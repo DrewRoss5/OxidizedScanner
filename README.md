@@ -30,4 +30,4 @@ Defines the IP address to be scanned
 Defines the ports to be scanned
 
 ### -t, --timeout
-Defines the timeout for eachport (Default is 54)
+Defines the timeout for eachport (Default is 5)
