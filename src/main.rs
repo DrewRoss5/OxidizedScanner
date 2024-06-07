@@ -73,5 +73,5 @@ fn main(){
     scan.scan_single_threaded(timeout);
     let elapsed = sys_time.elapsed().unwrap();
     println!("{}", "DONE".bright_blue());
-    println!("Scan Completed in: {} seconds", elapsed.as_secs_f64());
+    println!("Scan Completed in: {:.2} seconds", elapsed.as_secs_f64());
 }
