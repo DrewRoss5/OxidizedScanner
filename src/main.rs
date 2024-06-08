@@ -32,7 +32,7 @@ fn main(){
     let args = Command::new("OxiScanner").about("A simple port scanner written in rust").arg(arg!(-a --address <ADDRESS> "The IP address to be scanned").required(true))
                                                            .arg(arg!(-p --ports <PORTS> "The ports to be scanned.").required(true))
                                                            .arg(arg!(-t --timeout <SECONDS> "The time it takes, in seconds, for a connection attempt to timeout (DEFAULT=5)"))
-                                                           .arg(arg!(-m --multithread "Makes the scan use multiple threads").default_missing_value("true"))
+                                                           .arg(arg!(-m --multithreaded "Makes the scan use multiple threads").default_value("false").default_missing_value("true"))
                                                            .get_matches();
     // ensure the address is valid 
     let address: &String = args.get_one::<String>("address").unwrap();
@@ -69,11 +69,8 @@ fn main(){
     // begin the scan
     println!("{}", "Starting Scan...".blue()); 
     let sys_time = SystemTime::now();
-    match  args.contains_id("multithread"){
-        true => {
-            println!("multi");
-            scan.scan_multi_threaded(timeout);
-        }   
+    match  args.get_one("multithreaded").unwrap(){
+        true => {scan.scan_multi_threaded(timeout);}   
         false => {scan.scan_single_threaded(timeout);}
     }
     let elapsed = sys_time.elapsed().unwrap();
