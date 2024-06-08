@@ -4,7 +4,6 @@ A portscanner implemented in Rust, made for educational purposes.
 # Roadmap/ToDo:
   - Add support for IPv6
   - Add support for using URLs instead of IP addresses
-  - Implement multithreading
 
 # Instalation
 ### Linux:
@@ -26,6 +25,9 @@ Defines the IP address to be scanned
 
 ### -p, --ports
 Defines the ports to be scanned
+
+# -m, --multithreaded
+Takes no argument, makes the scan use multiple threads. At the moment, the number of threads spawned is not capped.
 
 ### -t, --timeout
 Defines the timeout for eachport (Default is 5)
