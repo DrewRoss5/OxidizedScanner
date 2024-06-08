@@ -26,7 +26,7 @@ Defines the IP address to be scanned
 ### -p, --ports
 Defines the ports to be scanned
 
-# -m, --multithreaded
+### -m, --multithreaded
 Takes no argument, makes the scan use multiple threads. At the moment, the number of threads spawned is not capped.
 
 ### -t, --timeout
