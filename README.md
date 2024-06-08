@@ -11,7 +11,7 @@ A portscanner implemented in Rust, made for educational purposes.
 Ensure cargo is installed and run `install/install.h`. The program can be called with the `oxiscanner` command.
 
 ### Windows:
-Manually run `cargo build` and run the progra with `target\debug\port-scanner.exe` executable 
+Manually run `cargo build` and run the progra with `target\debug\oxiscanner.exe` executable 
 
 # Usage
 `oxiscanner.exe -a <ADDRESS> -p <PORTS>`<br>
