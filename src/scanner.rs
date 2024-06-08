@@ -1,4 +1,4 @@
-use std::{io, net::{Shutdown, SocketAddr, TcpStream}, str::FromStr, time::Duration};
+use std::{io, net::{Shutdown, SocketAddr, TcpStream}, str::FromStr, thread, time::Duration};
 use colored::*;
 
 pub struct PortScanner{
@@ -13,18 +13,36 @@ impl PortScanner {
 
     pub fn scan_single_threaded(&self, timeout: u64){
         for i in &self.ports{
-            print!("{} port {}: ", self.address, i);
-            match scan_port(&self.address, *i, timeout) {
-                Ok(res) => {
-                    match res{
-                        true => {println!("{}", "OPEN".bold().green())}
-                        false => {println!("{}", "CLOSED".bold().red())}
-                    }
-                }
-                Err(_) => {println!("{}", "ERROR".on_red())}
-            }
+            print_scan_result(&self.address, *i, timeout);
         }
     }
+
+    pub fn scan_multi_threaded(&self, timeout: u64){
+        let mut threads: Vec<thread::JoinHandle<()>> = Vec::new();
+        for i in &self.ports{
+            let tmp_port = *i;
+            let tmp_addr = self.address.clone();
+            threads.push(thread::spawn(move || {print_scan_result(&tmp_addr, tmp_port, timeout)}));
+        }
+        for i in threads{
+            i.join().unwrap();
+        }
+    }
+
+}
+
+// prints the result of a scanport
+fn print_scan_result(address: &String, port: u16, timeout: u64){
+    match scan_port(address, port, timeout) {
+        Ok(res) => {
+            match res{
+                true => {println!("{} on port {}: {}", address, port, "OPEN".bold().green())}
+                false => {println!("{} on port {}: {}", address, port, "CLOSED".bold().red())}
+            }
+        }
+        Err(_) => {println!("{}", "ERROR".on_red())}
+    }
+
 }
 
 // attempts to connect to the provided address on the provided port, returns true if the port is open, otherwise, returns false

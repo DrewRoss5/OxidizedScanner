@@ -1,6 +1,5 @@
 mod scanner;
 use std::{num::ParseIntError, process::exit, time::SystemTime};
-
 use clap::{arg, Command};
 use colored::Colorize;
 use scanner::PortScanner;
@@ -32,8 +31,9 @@ fn validate_ipv4_addr(addr: &String) -> bool{
 fn main(){
     let args = Command::new("OxiScanner").about("A simple port scanner written in rust").arg(arg!(-a --address <ADDRESS> "The IP address to be scanned").required(true))
                                                            .arg(arg!(-p --ports <PORTS> "The ports to be scanned.").required(true))
-                                                            .arg(arg!(-t --timeout <SECONDS> "The time it takes, in seconds, for a connection attempt to timeout (DEFAULT=5)"))
-                                                            .get_matches();
+                                                           .arg(arg!(-t --timeout <SECONDS> "The time it takes, in seconds, for a connection attempt to timeout (DEFAULT=5)"))
+                                                           .arg(arg!(-m --multithread "Makes the scan use multiple threads").default_missing_value("true"))
+                                                           .get_matches();
     // ensure the address is valid 
     let address: &String = args.get_one::<String>("address").unwrap();
     if !validate_ipv4_addr(address){
@@ -67,10 +67,15 @@ fn main(){
     }
     let scan = PortScanner::new(&address, ports);
     // begin the scan
-    // TODO: Make this determine the type of scan (multithreaded, SYN, etc.) to run before running
     println!("{}", "Starting Scan...".blue()); 
     let sys_time = SystemTime::now();
-    scan.scan_single_threaded(timeout);
+    match  args.contains_id("multithread"){
+        true => {
+            println!("multi");
+            scan.scan_multi_threaded(timeout);
+        }   
+        false => {scan.scan_single_threaded(timeout);}
+    }
     let elapsed = sys_time.elapsed().unwrap();
     println!("{}", "DONE".bright_blue());
     println!("Scan Completed in: {:.2} seconds", elapsed.as_secs_f64());
