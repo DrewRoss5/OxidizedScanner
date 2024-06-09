@@ -59,7 +59,6 @@ fn main(){
                     println!("Invalid timeout.");
                     exit(1)
                 }
-
             }
         }
         None => {timeout = 5}
@@ -67,13 +66,13 @@ fn main(){
     }
     let scan = PortScanner::new(&address, ports);
     // begin the scan
-    println!("{}", "Starting Scan...".blue()); 
+    println!("{}", "Starting Scan...".bright_yellow()); 
     let sys_time = SystemTime::now();
     match  args.get_one("multithreaded").unwrap(){
         true => {scan.scan_multi_threaded(timeout);}   
         false => {scan.scan_single_threaded(timeout);}
     }
     let elapsed = sys_time.elapsed().unwrap();
-    println!("{}", "DONE".bright_blue());
+    println!("{}", "DONE".bright_yellow());
     println!("Scan Completed in: {:.2} seconds", elapsed.as_secs_f64());
 }
